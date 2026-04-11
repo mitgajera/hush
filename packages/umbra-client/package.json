@@ -1,0 +1,14 @@
+{
+  "name": "@shieldpay/umbra-client",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@umbra-privacy/sdk": "latest",
+    "@umbra-privacy/web-zk-prover": "latest"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
