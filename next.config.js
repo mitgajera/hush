@@ -9,6 +9,10 @@ const nextConfig = {
       tls: false,
       crypto: require.resolve('crypto-browserify'),
     }
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'pino-pretty': false,
+    }
     return config
   },
 }
