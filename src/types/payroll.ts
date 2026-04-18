@@ -8,6 +8,13 @@ export type PayrollRecipient = {
   error?: string
 }
 
+export type DraftRecipient = {
+  id: string
+  name: string
+  umbraAddress: string
+  amountUsdc: number
+}
+
 export type PayrollRun = {
   id: string
   createdAt: string

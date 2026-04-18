@@ -17,6 +17,13 @@ export const payrollRecipientSchema = z.object({
   amount: usdcAmountSchema,
 })
 
+export const draftRecipientSchema = z.object({
+  id: z.string(),
+  name: z.string().trim().min(1, 'Name is required'),
+  umbraAddress: umbraAddressSchema,
+  amountUsdc: usdcAmountSchema,
+})
+
 export const projectSchema = z.object({
   name: z.string().trim().min(1, 'Project name is required'),
   clientDescription: z.string().trim().max(240).optional(),
