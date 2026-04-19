@@ -3,6 +3,7 @@ export const STORAGE_KEYS = {
   hushLinks: 'hush:links:v1',
   projects: 'hush:projects:v1',
   auditKeys: 'hush:audit_keys:v1',
+  credentials: 'hush:credentials:v1',
   settings: 'hush:settings:v1',
   revealMode: 'hush:reveal:v1',
 } as const
