@@ -16,7 +16,7 @@ function isActive(pathname: string, href: string) {
 function NavBadge({ count }: { count: number }) {
   if (count <= 0) return null
   return (
-    <span className="ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-accent/15 px-1.5 text-2xs font-medium text-accent">
+    <span className="ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-warning/15 px-1.5 text-2xs font-medium text-warning">
       {count > 99 ? '99+' : count}
     </span>
   )
@@ -44,7 +44,7 @@ export function Sidebar() {
         <Link href="/" className="text-sm font-medium text-fg">
           hush.
         </Link>
-        <PrivateBadge />
+        <PrivateBadge size="sm" />
       </div>
 
       <nav className="flex-1 space-y-0.5 px-2 py-2">
@@ -87,6 +87,7 @@ export function Sidebar() {
 
       <div className="border-t border-border px-4 py-3">
         <p className="text-2xs text-fg-subtle">Powered by Umbra</p>
+        <p className="mt-0.5 text-2xs text-fg-subtle">SDK v0.0.0-dev (stub)</p>
       </div>
     </aside>
   )
