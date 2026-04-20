@@ -1,22 +1,52 @@
 'use client'
 
-import { forwardRef, InputHTMLAttributes, ReactNode, useId } from 'react'
+import {
+  forwardRef,
+  FocusEvent,
+  InputHTMLAttributes,
+  ReactNode,
+  useId,
+  useState,
+} from 'react'
+import { Check } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
   label?: string
   error?: string
   hint?: string
+  focusHint?: string
   leftIcon?: ReactNode
   rightIcon?: ReactNode
+  valid?: boolean
 }
 
 export const Input = forwardRef<HTMLInputElement, Props>(function Input(
-  { label, error, hint, leftIcon, rightIcon, className, id, ...rest },
+  {
+    label,
+    error,
+    hint,
+    focusHint,
+    leftIcon,
+    rightIcon,
+    valid,
+    className,
+    id,
+    onFocus,
+    onBlur,
+    ...rest
+  },
   ref
 ) {
   const autoId = useId()
   const inputId = id ?? autoId
+  const [focused, setFocused] = useState(false)
+
+  const effectiveRightIcon =
+    valid && !error ? <Check className="h-3.5 w-3.5 text-success" /> : rightIcon
+
+  const helper =
+    error ?? (focused && focusHint) ?? hint ?? null
 
   return (
     <div className="w-full">
@@ -34,27 +64,44 @@ export const Input = forwardRef<HTMLInputElement, Props>(function Input(
         <input
           ref={ref}
           id={inputId}
+          onFocus={(e: FocusEvent<HTMLInputElement>) => {
+            setFocused(true)
+            onFocus?.(e)
+          }}
+          onBlur={(e: FocusEvent<HTMLInputElement>) => {
+            setFocused(false)
+            onBlur?.(e)
+          }}
           className={cn(
             'w-full h-9 rounded-md bg-bg-surface border text-sm text-fg placeholder:text-fg-subtle',
             'focus:bg-bg outline-none transition-colors',
             leftIcon ? 'pl-8' : 'pl-3',
-            rightIcon ? 'pr-8' : 'pr-3',
-            error ? 'border-danger focus:border-danger' : 'border-border focus:border-border-strong',
+            effectiveRightIcon ? 'pr-8' : 'pr-3',
+            error
+              ? 'border-danger focus:border-danger'
+              : valid
+              ? 'border-success/40 focus:border-success/60'
+              : 'border-border focus:border-border-strong',
             className
           )}
           {...rest}
         />
-        {rightIcon && (
+        {effectiveRightIcon && (
           <span className="absolute inset-y-0 right-2.5 flex items-center text-fg-subtle">
-            {rightIcon}
+            {effectiveRightIcon}
           </span>
         )}
       </div>
-      {error ? (
-        <p className="mt-1.5 text-xs text-danger">{error}</p>
-      ) : hint ? (
-        <p className="mt-1.5 text-xs text-fg-subtle">{hint}</p>
-      ) : null}
+      {helper !== null && (
+        <p
+          className={cn(
+            'mt-1.5 text-xs',
+            error ? 'text-danger' : focused && focusHint ? 'text-fg-muted' : 'text-fg-subtle'
+          )}
+        >
+          {helper}
+        </p>
+      )}
     </div>
   )
 })
