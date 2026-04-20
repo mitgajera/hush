@@ -1,7 +1,7 @@
 'use client'
 
-import { ButtonHTMLAttributes, forwardRef, ReactNode } from 'react'
-import { Loader2 } from 'lucide-react'
+import { ButtonHTMLAttributes, forwardRef, ReactNode, useEffect, useState } from 'react'
+import { Check, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
@@ -13,6 +13,11 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean
   leftIcon?: ReactNode
   rightIcon?: ReactNode
+  /**
+   * Change this value (e.g. an incremented counter) to flash the button green
+   * with a check icon for 1.5s — signals async success without a toast.
+   */
+  flashKey?: string | number
 }
 
 const VARIANT: Record<Variant, string> = {
@@ -35,6 +40,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
     loading,
     leftIcon,
     rightIcon,
+    flashKey,
     className,
     children,
     disabled,
@@ -43,6 +49,15 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
   },
   ref
 ) {
+  const [flashing, setFlashing] = useState(false)
+
+  useEffect(() => {
+    if (flashKey === undefined) return
+    setFlashing(true)
+    const id = window.setTimeout(() => setFlashing(false), 1500)
+    return () => window.clearTimeout(id)
+  }, [flashKey])
+
   return (
     <button
       ref={ref}
@@ -51,19 +66,21 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
       className={cn(
         'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors',
         'disabled:opacity-40 disabled:cursor-not-allowed',
-        VARIANT[variant],
+        flashing ? 'bg-success text-bg' : VARIANT[variant],
         SIZE[size],
         className
       )}
       {...rest}
     >
-      {loading ? (
+      {flashing ? (
+        <Check className="h-4 w-4" aria-hidden="true" />
+      ) : loading ? (
         <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
       ) : (
         leftIcon
       )}
       {children}
-      {!loading && rightIcon}
+      {!loading && !flashing && rightIcon}
     </button>
   )
 })
