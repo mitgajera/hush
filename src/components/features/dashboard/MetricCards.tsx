@@ -25,7 +25,7 @@ function Metric({
         </span>
         <span className="text-2xs uppercase tracking-wide">{label}</span>
       </div>
-      <div className="text-xl text-fg">{value}</div>
+      <div className="text-fg">{value}</div>
     </Card>
   )
 }
@@ -52,26 +52,41 @@ export function MetricCards() {
         icon={<Lock className="h-3.5 w-3.5" />}
         label="Total hushed"
         value={
-          <span className="flex items-baseline gap-1.5">
-            <MaskedAmount id="metric-total-hushed" amount={totalHushed} />
-            <span className="text-xs text-fg-subtle">USDC</span>
-          </span>
+          <MaskedAmount
+            id="metric-total-hushed"
+            amount={totalHushed}
+            size="xl"
+            showCurrency
+            showToggle={false}
+          />
         }
       />
       <Metric
         icon={<LinkIcon className="h-3.5 w-3.5" />}
         label="Active links"
-        value={<span className="font-mono tabular-nums">{activeLinks}</span>}
+        value={
+          <span className="text-2xl font-medium font-mono tabular-nums">
+            {activeLinks}
+          </span>
+        }
       />
       <Metric
         icon={<Users className="h-3.5 w-3.5" />}
         label="Payroll runs"
-        value={<span className="font-mono tabular-nums">{completedRuns}</span>}
+        value={
+          <span className="text-2xl font-medium font-mono tabular-nums">
+            {completedRuns}
+          </span>
+        }
       />
       <Metric
         icon={<CheckCircle2 className="h-3.5 w-3.5" />}
         label="Pending milestones"
-        value={<span className="font-mono tabular-nums">{pendingMilestones}</span>}
+        value={
+          <span className="text-2xl font-medium font-mono tabular-nums">
+            {pendingMilestones}
+          </span>
+        }
       />
     </div>
   )
