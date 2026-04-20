@@ -2,6 +2,7 @@
 
 import { Check, Copy } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { truncateAddress } from '@/lib/utils/format'
 import { cn } from '@/lib/utils/cn'
 
@@ -30,9 +31,10 @@ export function TruncatedAddress({
     try {
       await navigator.clipboard.writeText(address)
       setCopied(true)
+      toast.success('Address copied')
       setTimeout(() => setCopied(false), 1500)
     } catch {
-      /* ignore */
+      toast.error('Failed to copy')
     }
   }
 
