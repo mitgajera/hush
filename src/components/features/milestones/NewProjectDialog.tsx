@@ -105,6 +105,8 @@ export function NewProjectDialog({ open, onOpenChange }: Props) {
           value={contractorAddress}
           onChange={(e) => setContractorAddress(e.target.value.trim())}
           className="font-mono text-xs"
+          focusHint="Umbra addresses start with umb1…"
+          valid={/^umb1[a-zA-Z0-9]{38,}$/.test(contractorAddress)}
           error={errorField === 'contractorAddress' ? error ?? undefined : undefined}
         />
       </div>
