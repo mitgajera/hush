@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation'
 import { NetworkPill } from './NetworkPill'
 import { WalletConnectButton } from '@/components/wallet/WalletConnectButton'
+import { GlobalRevealToggle } from '@/components/ui/MaskedAmount'
 import { PAGE_TITLES } from '@/constants/navigation'
 
 function titleFor(pathname: string): string {
@@ -18,7 +19,8 @@ export function TopBar() {
   return (
     <header className="sticky top-0 z-20 flex h-[52px] items-center justify-between border-b border-border bg-bg/80 px-6 backdrop-blur">
       <h1 className="text-sm font-medium text-fg">{title}</h1>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
+        <GlobalRevealToggle />
         <NetworkPill />
         <WalletConnectButton />
       </div>
