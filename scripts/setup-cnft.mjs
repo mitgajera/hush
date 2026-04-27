@@ -69,12 +69,13 @@ async function main() {
 
   console.log('\n2. Creating merkle tree…')
   const merkleTree = generateSigner(umi)
-  await createTree(umi, {
+  const treeIx = await createTree(umi, {
     merkleTree,
     maxDepth: 14,
     maxBufferSize: 64,
     public: false,
-  }).sendAndConfirm(umi)
+  })
+  await treeIx.sendAndConfirm(umi)
   console.log(`   Tree:        ${merkleTree.publicKey}`)
 
   console.log('\nCopy these into .env.local:')

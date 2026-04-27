@@ -17,6 +17,32 @@ function loadWalletStandard() {
   return walletStandardPromise
 }
 
+// getPollingTransactionForwarder accepts a deps.createRpc injection point.
+// We provide a minimal RPC duck-type that adds skipPreflight: true to every
+// sendTransaction call, bypassing the preflight simulation that causes
+// SignatureFailure when Phantom signs @solana/kit versioned transactions.
+function createSkipPreflightRpc(rpcUrl: string) {
+  async function rpcCall(method: string, params: unknown[]) {
+    const res = await fetch(rpcUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+    })
+    const json = (await res.json()) as { result: unknown; error?: { message: string } }
+    if (json.error) throw new Error(json.error.message)
+    return json.result
+  }
+
+  return {
+    sendTransaction(wireTransaction: string, opts: Record<string, unknown>) {
+      return { send: () => rpcCall('sendTransaction', [wireTransaction, { ...opts, skipPreflight: true }]) }
+    },
+    getSignatureStatuses(signatures: string[], opts: Record<string, unknown>) {
+      return { send: () => rpcCall('getSignatureStatuses', [signatures, opts]) }
+    },
+  }
+}
+
 
 /**
  * Creates a real Umbra SDK client wired to the currently-connected Solana
@@ -74,12 +100,21 @@ export async function createRealUmbraClient(
     process.env.NEXT_PUBLIC_SOLANA_WS_URL ?? rpcUrl.replace(/^http/, 'ws')
   const indexerApiEndpoint = process.env.NEXT_PUBLIC_UMBRA_INDEXER_URL
 
-  return sdk.getUmbraClient({
-    signer,
-    network,
-    rpcUrl,
-    rpcSubscriptionsUrl,
-    indexerApiEndpoint,
-    deferMasterSeedSignature: true,
-  })
+  const transactionForwarder = sdk.getPollingTransactionForwarder(
+    { rpcUrl },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    { createRpc: createSkipPreflightRpc as any }
+  )
+
+  return sdk.getUmbraClient(
+    {
+      signer,
+      network,
+      rpcUrl,
+      rpcSubscriptionsUrl,
+      indexerApiEndpoint,
+      deferMasterSeedSignature: true,
+    },
+    { transactionForwarder }
+  )
 }

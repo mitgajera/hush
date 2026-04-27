@@ -31,3 +31,13 @@ next-env.d.ts
 
 # Local-only spec
 specs.md
+
+# Claude / AI tooling (never commit)
+.agents/
+.claude/
+.vscode/
+ui-plan/
+claude-session.jsonl
+codex-session.jsonl
+skills-lock.json
+*.jsonl
