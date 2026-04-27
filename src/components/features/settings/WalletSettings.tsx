@@ -104,7 +104,7 @@ export function WalletSettings() {
           hint={
             settings.rpcUrl !== rpcDraft
               ? 'Unsaved changes.'
-              : `Currently using ${connection.rpcEndpoint}`
+              : `Currently using ${connection.rpcEndpoint.replace(/([?&]api-key=)[^&]*/i, '$1***')}`
           }
         />
         <div className="flex items-center justify-end gap-2">

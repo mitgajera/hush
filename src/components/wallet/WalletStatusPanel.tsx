@@ -1,37 +1,23 @@
 'use client'
 
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
-import { useEffect, useState } from 'react'
-import { ExternalLink } from 'lucide-react'
+import { AlertTriangle, ExternalLink, Loader2 } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { TruncatedAddress } from '@/components/ui/TruncatedAddress'
 import { MaskedAmount } from '@/components/ui/MaskedAmount'
-import { getPrivateBalance } from '@/lib/umbra/balance'
-import { createUmbraClient } from '@/lib/umbra/client'
+import { useEncryptedUsdcBalance } from '@/hooks/useEncryptedBalance'
 import { UMBRA_WALLET_URL } from '@/constants/content'
 
 export function WalletStatusPanel() {
-  const { connection } = useConnection()
   const wallet = useWallet()
   const { setVisible } = useWalletModal()
-  const [balance, setBalance] = useState<number | null>(null)
+  const balance = useEncryptedUsdcBalance()
 
   const network = process.env.NEXT_PUBLIC_SOLANA_NETWORK || 'devnet'
   const connected = wallet.connected && wallet.publicKey
   const address = wallet.publicKey?.toBase58() ?? ''
-
-  useEffect(() => {
-    if (!connected) {
-      setBalance(null)
-      return
-    }
-    const client = createUmbraClient(wallet, connection)
-    getPrivateBalance(client, 'USDC')
-      .then(setBalance)
-      .catch(() => setBalance(0))
-  }, [connected, wallet, connection])
 
   if (!connected) {
     return (
@@ -71,9 +57,27 @@ export function WalletStatusPanel() {
       <div className="space-y-1.5">
         <p className="text-xs text-fg-muted">Private balance</p>
         <div className="flex items-baseline gap-1.5">
-          <MaskedAmount id="wallet-status-balance" amount={balance ?? 0} />
-          <span className="text-xs text-fg-subtle">USDC</span>
+          {balance.loading ? (
+            <span className="inline-flex items-center gap-1 text-sm text-fg-muted">
+              <Loader2 className="h-3 w-3 animate-spin" /> Loading…
+            </span>
+          ) : balance.state === 'mxe' ? (
+            <span className="text-sm text-fg-muted">Locked (MXE)</span>
+          ) : balance.state === 'no_client' ? (
+            <span className="text-sm text-fg-muted">—</span>
+          ) : (
+            <MaskedAmount
+              id="wallet-status-balance"
+              amount={balance.amountUsdc ?? 0}
+              showCurrency
+            />
+          )}
         </div>
+        {balance.error && (
+          <p className="flex items-center gap-1 text-2xs text-danger">
+            <AlertTriangle className="h-3 w-3" /> {balance.error.message}
+          </p>
+        )}
       </div>
 
       <a

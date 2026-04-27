@@ -55,7 +55,7 @@ export function AboutPanel() {
         <p className="text-fg">Powered by Umbra</p>
         <p className="mt-1">{COPY.poweredBy}</p>
         <p className="mt-3 text-2xs text-fg-subtle">
-          Built for Solana Frontier Hackathon — Umbra side track.
+          Umbra is a privacy layer for Web3, enabling shielded transactions.
         </p>
       </div>
     </Card>
