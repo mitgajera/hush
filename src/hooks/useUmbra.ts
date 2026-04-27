@@ -1,15 +1,11 @@
 'use client'
 
-import { useMemo } from 'react'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { createUmbraClient, UmbraClient } from '@/lib/umbra/client'
+import type { getUmbraClient } from '@umbra-privacy/sdk'
+export type UmbraClient = Awaited<ReturnType<typeof getUmbraClient>>
+
+import { useUmbraSdkClient } from './useUmbraSdkClient'
 
 export function useUmbra(): UmbraClient | null {
-  const { connection } = useConnection()
-  const wallet = useWallet()
-
-  return useMemo(() => {
-    if (!wallet.connected || !wallet.publicKey) return null
-    return createUmbraClient(wallet, connection)
-  }, [wallet.connected, wallet.publicKey, wallet, connection])
+  const sdk = useUmbraSdkClient()
+  return sdk.status === 'ready' ? sdk.client : null
 }

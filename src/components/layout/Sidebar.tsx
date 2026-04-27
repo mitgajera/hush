@@ -87,7 +87,7 @@ export function Sidebar() {
 
       <div className="border-t border-border px-4 py-3">
         <p className="text-2xs text-fg-subtle">Powered by Umbra</p>
-        <p className="mt-0.5 text-2xs text-fg-subtle">SDK v0.0.0-dev (stub)</p>
+        <p className="mt-0.5 text-2xs text-fg-subtle">SDK v4.0.0</p>
       </div>
     </aside>
   )

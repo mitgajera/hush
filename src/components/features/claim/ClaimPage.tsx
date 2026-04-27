@@ -1,14 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { toast } from 'sonner'
 import { Clock, Loader2, ShieldAlert, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { PrivateBadge } from '@/components/ui/PrivateBadge'
 import { NoWalletPrompt } from './NoWalletPrompt'
 import { ClaimSuccess } from './ClaimSuccess'
-import { createUmbraClient } from '@/lib/umbra/client'
+import { useUmbraSdkClient } from '@/hooks/useUmbraSdkClient'
 import { claimPaymentLink, inspectPaymentLink } from '@/lib/umbra/paymentLink'
 import { hushLinksStorage } from '@/lib/storage/hushLinks'
 import { effectiveStatus } from '@/lib/links/helpers'
@@ -36,14 +36,13 @@ type LinkData = {
 }
 
 export function ClaimPage({ token }: { token: string }) {
-  const { connection } = useConnection()
   const wallet = useWallet()
+  const sdk = useUmbraSdkClient()
 
   const [phase, setPhase] = useState<PhaseKey>('loading')
   const [data, setData] = useState<LinkData | null>(null)
   const [claimed, setClaimed] = useState<ClaimedResult | null>(null)
 
-  // Fetch link state on mount (and when wallet changes so inspectPaymentLink can use an auth'd client if needed)
   useEffect(() => {
     let cancelled = false
 
@@ -53,8 +52,9 @@ export function ClaimPage({ token }: { token: string }) {
 
       let remote: PaymentLinkInspection | null = null
       try {
-        const client = createUmbraClient(wallet, connection)
-        remote = await inspectPaymentLink(client, token)
+        if (sdk.status === 'ready') {
+          remote = await inspectPaymentLink(sdk.client, token)
+        }
       } catch {
         remote = null
       }
@@ -96,14 +96,13 @@ export function ClaimPage({ token }: { token: string }) {
     return () => {
       cancelled = true
     }
-  }, [token, wallet, connection])
+  }, [token, sdk])
 
   async function onClaim() {
-    if (!wallet.connected || !wallet.publicKey || !data) return
+    if (!wallet.connected || !wallet.publicKey || !data || sdk.status !== 'ready') return
     setPhase('claiming')
     try {
-      const client = createUmbraClient(wallet, connection)
-      const result = await claimPaymentLink(client, token)
+      const result = await claimPaymentLink(sdk.client, token)
       const amount = result.amountUsdc > 0 ? result.amountUsdc : data.amountUsdc
       const record: ClaimedResult = {
         amountUsdc: amount,

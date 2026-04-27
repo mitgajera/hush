@@ -1,45 +1,51 @@
+'use client'
+
+import type { getUmbraClient } from '@umbra-privacy/sdk'
+type IUmbraClient = Awaited<ReturnType<typeof getUmbraClient>>
+
 import { nanoid } from 'nanoid'
-import { UmbraClient } from './client'
-import {
-  PaymentLinkInspection,
-  PaymentLinkParams,
-  PaymentLinkResult,
-} from './types'
+import { hushLinksStorage } from '@/lib/storage/hushLinks'
+import type { PaymentLinkInspection, PaymentLinkParams, PaymentLinkResult } from './types'
+import { sendConfidentialTransfer } from './transfer'
 
 export async function generatePaymentLink(
-  _client: UmbraClient,
+  _client: IUmbraClient,
   _params: PaymentLinkParams
 ): Promise<PaymentLinkResult> {
-  // Real:
-  //   const res = await umbra.createPaymentLink({...})
-  //   const token = res.token
   const token = nanoid(22)
   const linkId = 'link_' + nanoid(12)
   const base = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-  return {
-    linkId,
-    token,
-    url: `${base}/claim/${token}`,
-  }
+  return { linkId, token, url: `${base}/claim/${token}` }
 }
 
 export async function claimPaymentLink(
-  _client: UmbraClient,
-  _token: string
+  client: IUmbraClient,
+  token: string
 ): Promise<{ txSignature: string; amountUsdc: number }> {
-  // Real:
-  //   return umbra.claimPaymentLink({ token })
-  await new Promise((r) => setTimeout(r, 1000))
-  return {
-    txSignature: 'claim_' + nanoid(18),
-    amountUsdc: 0,
-  }
+  const link = hushLinksStorage.getAll().find((l) => l.linkToken === token)
+  if (!link) throw new Error('Payment link not found')
+  if (link.status !== 'active') throw new Error(`Payment link is ${link.status}`)
+
+  const result = await sendConfidentialTransfer(client, {
+    to: link.senderAddress,
+    amountUsdc: link.amountUsdc,
+    token: 'USDC',
+  })
+
+  hushLinksStorage.update(link.id, {
+    status: 'claimed',
+    claimedAt: new Date().toISOString(),
+    claimTxSignature: result.txSignature,
+  })
+
+  return { txSignature: result.txSignature, amountUsdc: link.amountUsdc }
 }
 
 export async function inspectPaymentLink(
-  _client: UmbraClient,
-  _token: string
+  _client: IUmbraClient,
+  token: string
 ): Promise<PaymentLinkInspection> {
-  // Real: look up link from chain or SDK
-  return { amountUsdc: 0, status: 'active' }
+  const link = hushLinksStorage.getAll().find((l) => l.linkToken === token)
+  if (!link) throw new Error('Payment link not found')
+  return { amountUsdc: link.amountUsdc, description: link.description, status: link.status }
 }

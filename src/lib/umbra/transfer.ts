@@ -1,30 +1,42 @@
-import { UmbraClient } from './client'
-import {
-  ConfidentialTransferParams,
-  ConfidentialTransferResult,
-} from './types'
+'use client'
+
+import type { getUmbraClient } from '@umbra-privacy/sdk'
+type IUmbraClient = Awaited<ReturnType<typeof getUmbraClient>>
+
+import type { ConfidentialTransferParams, ConfidentialTransferResult } from './types'
+import { toRawUsdc } from '@/lib/utils/format'
+
+function usdcMint(): string {
+  return process.env.NEXT_PUBLIC_USDC_MINT ?? '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'
+}
 
 export async function sendConfidentialTransfer(
-  _client: UmbraClient,
-  _params: ConfidentialTransferParams
+  client: IUmbraClient,
+  params: ConfidentialTransferParams
 ): Promise<ConfidentialTransferResult> {
-  // Real:
-  //   const result = await umbra.sendConfidentialTransfer({
-  //     to: params.to,
-  //     amount: toRawUsdc(params.amountUsdc),
-  //     token: USDC_MINT,
-  //     memo: params.memo,
-  //   })
-  //   return {
-  //     txSignature: result.signature,
-  //     encryptedAmount: result.encryptedAmount,
-  //     blockTime: result.blockTime,
-  //   }
-  await new Promise((r) => setTimeout(r, 1200))
+  const [sdk, proverPkg] = await Promise.all([
+    import('@umbra-privacy/sdk'),
+    import('@umbra-privacy/web-zk-prover'),
+  ])
+
+  const zkProver = proverPkg.getCreateReceiverClaimableUtxoFromEncryptedBalanceProver({
+    assetProvider: proverPkg.getCdnZkAssetProvider(),
+  })
+
+  const createUtxo = sdk.getEncryptedBalanceToReceiverClaimableUtxoCreatorFunction(
+    { client },
+    { zkProver }
+  )
+
+  const result = await createUtxo({
+    amount: toRawUsdc(params.amountUsdc) as never,
+    destinationAddress: params.to as never,
+    mint: usdcMint() as never,
+  })
+
   return {
-    txSignature:
-      'stub_' + Math.random().toString(36).slice(2, 10) + 'xxxxxxxxxxxx',
-    encryptedAmount: 'enc_' + Math.random().toString(36).slice(2, 18),
+    txSignature: result.queueSignature,
+    encryptedAmount: 'encrypted',
     blockTime: Math.floor(Date.now() / 1000),
   }
 }

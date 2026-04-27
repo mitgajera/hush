@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { toast } from 'sonner'
 import { Link2 } from 'lucide-react'
@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
 import { MaskedAmount } from '@/components/ui/MaskedAmount'
 import { useUmbra } from '@/hooks/useUmbra'
-import { getPrivateBalance } from '@/lib/umbra/balance'
+import { useEncryptedUsdcBalance } from '@/hooks/useEncryptedBalance'
 import { generatePaymentLink } from '@/lib/umbra/paymentLink'
 import { hushLinksStorage } from '@/lib/storage/hushLinks'
 import { hushLinkSchema } from '@/lib/utils/validation'
@@ -24,17 +24,14 @@ type Props = {
 export function LinkGenerator({ onGenerated }: Props) {
   const umbra = useUmbra()
   const wallet = useWallet()
+  const balanceResult = useEncryptedUsdcBalance()
   const [amount, setAmount] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [expiry, setExpiry] = useState<ExpiryKey>('7d')
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [balance, setBalance] = useState<number | null>(null)
 
-  useEffect(() => {
-    if (!umbra) return
-    getPrivateBalance(umbra, 'USDC').then(setBalance).catch(() => setBalance(0))
-  }, [umbra])
+  const balance = balanceResult.amountUsdc
 
   async function generate() {
     setError(null)

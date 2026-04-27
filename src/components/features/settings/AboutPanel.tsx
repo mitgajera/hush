@@ -6,7 +6,7 @@ import { PrivateBadge } from '@/components/ui/PrivateBadge'
 import { COPY, HUSH_GITHUB_URL, UMBRA_DOCS_URL } from '@/constants/content'
 
 const APP_VERSION = '0.1.0'
-const UMBRA_SDK_VERSION = 'stub (0.0.0-dev)'
+const UMBRA_SDK_VERSION = '4.0.0'
 
 export function AboutPanel() {
   return (

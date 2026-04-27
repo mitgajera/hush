@@ -1,5 +1,6 @@
 import { PayrollRecipient, PayrollRun } from '@/types'
-import { UmbraClient } from '@/lib/umbra/client'
+import type { getUmbraClient } from '@umbra-privacy/sdk'
+type UmbraClient = Awaited<ReturnType<typeof getUmbraClient>>
 import { sendConfidentialTransfer } from '@/lib/umbra/transfer'
 import { payrollStorage } from '@/lib/storage/payrollRuns'
 

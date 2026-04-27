@@ -1,20 +1,18 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { Lock, Unlock } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { PrivateBadge } from '@/components/ui/PrivateBadge'
 import { Textarea } from '@/components/ui/Textarea'
 import { DecryptedRecordsTable } from './DecryptedRecordsTable'
-import { createUmbraClient } from '@/lib/umbra/client'
+import { useUmbraSdkClient } from '@/hooks/useUmbraSdkClient'
 import { decryptWithViewingKey } from '@/lib/umbra/viewingKey'
 import { auditKeysStorage } from '@/lib/storage/auditKeys'
 import type { DecryptedTransfer } from '@/lib/umbra/types'
 
 export function AccountantPortal({ initialKey }: { initialKey: string }) {
-  const { connection } = useConnection()
-  const wallet = useWallet()
+  const sdk = useUmbraSdkClient()
   const [key, setKey] = useState<string>(initialKey)
   const [records, setRecords] = useState<DecryptedTransfer[] | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -38,8 +36,8 @@ export function AccountantPortal({ initialKey }: { initialKey: string }) {
     setError(null)
     setLoading(true)
     try {
-      const client = createUmbraClient(wallet, connection)
-      const result = await decryptWithViewingKey(client, input)
+      if (sdk.status !== 'ready') throw new Error('Connect a wallet to decrypt records')
+      const result = await decryptWithViewingKey(sdk.client, input)
       setRecords(result)
       const stored = auditKeysStorage.getAll().find((k) => k.key === input)
       setScope(stored?.scopeDescription ?? 'Hush audit')

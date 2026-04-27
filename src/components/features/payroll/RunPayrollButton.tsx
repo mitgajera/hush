@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Send } from 'lucide-react'
 import { nanoid } from 'nanoid'
@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
 import { MaskedAmount } from '@/components/ui/MaskedAmount'
 import { useUmbra } from '@/hooks/useUmbra'
+import { useEncryptedUsdcBalance } from '@/hooks/useEncryptedBalance'
 import { payrollStorage } from '@/lib/storage/payrollRuns'
-import { getPrivateBalance } from '@/lib/umbra/balance'
 import { validateRecipient } from './RecipientPreviewTable'
 import type { DraftRecipient, PayrollRecipient, PayrollRun, Network } from '@/types'
 
@@ -23,22 +23,15 @@ type Props = {
 export function RunPayrollButton({ recipients, onRunCreated }: Props) {
   const umbra = useUmbra()
   const wallet = useWallet()
+  const balanceResult = useEncryptedUsdcBalance()
   const [confirmOpen, setConfirmOpen] = useState(false)
-  const [balance, setBalance] = useState<number | null>(null)
 
+  const balance = balanceResult.amountUsdc
   const total = recipients.reduce((sum, r) => sum + r.amountUsdc, 0)
   const invalidCount = recipients.filter((r) => validateRecipient(r) !== null).length
   const walletConnected = Boolean(umbra && wallet.publicKey)
   const canRun =
     recipients.length > 0 && invalidCount === 0 && walletConnected
-
-  useEffect(() => {
-    if (!umbra) {
-      setBalance(null)
-      return
-    }
-    getPrivateBalance(umbra, 'USDC').then(setBalance).catch(() => setBalance(0))
-  }, [umbra])
 
   const insufficient = balance !== null && balance < total
 
