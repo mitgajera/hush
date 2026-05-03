@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { toast } from 'sonner'
 import { Clock, Loader2, ShieldAlert, ShieldCheck } from 'lucide-react'
@@ -9,7 +10,7 @@ import { PrivateBadge } from '@/components/ui/PrivateBadge'
 import { NoWalletPrompt } from './NoWalletPrompt'
 import { ClaimSuccess } from './ClaimSuccess'
 import { useUmbraSdkClient } from '@/hooks/useUmbraSdkClient'
-import { claimPaymentLink, inspectPaymentLink } from '@/lib/umbra/paymentLink'
+import { claimPaymentLink, inspectPaymentLink, type UrlLinkParams } from '@/lib/umbra/paymentLink'
 import { hushLinksStorage } from '@/lib/storage/hushLinks'
 import { effectiveStatus } from '@/lib/links/helpers'
 import { formatUsdc } from '@/lib/utils/format'
@@ -38,6 +39,20 @@ type LinkData = {
 export function ClaimPage({ token }: { token: string }) {
   const wallet = useWallet()
   const sdk = useUmbraSdkClient()
+  const searchParams = useSearchParams()
+
+  // Parse link metadata from URL — present for any browser, not just the sender's.
+  const urlParams = useMemo<UrlLinkParams | null>(() => {
+    const a = searchParams.get('a')
+    const s = searchParams.get('s')
+    if (!a || !s || !Number.isFinite(Number(a))) return null
+    return {
+      amountUsdc: Number(a),
+      description: searchParams.get('d') ?? undefined,
+      senderAddress: s,
+      expiresAt: searchParams.get('e') ?? undefined,
+    }
+  }, [searchParams])
 
   const [phase, setPhase] = useState<PhaseKey>('loading')
   const [data, setData] = useState<LinkData | null>(null)
@@ -53,7 +68,7 @@ export function ClaimPage({ token }: { token: string }) {
       let remote: PaymentLinkInspection | null = null
       try {
         if (sdk.status === 'ready') {
-          remote = await inspectPaymentLink(sdk.client, token)
+          remote = await inspectPaymentLink(sdk.client, token, urlParams ?? undefined)
         }
       } catch {
         remote = null
@@ -61,16 +76,28 @@ export function ClaimPage({ token }: { token: string }) {
 
       if (cancelled) return
 
-      if (!local && !remote) {
+      // Show "revoked" only if there's absolutely no data — not even URL params.
+      if (!local && !remote && !urlParams) {
         setData(null)
         setPhase('revoked')
         return
       }
 
-      const effective = local ? effectiveStatus(local) : remote?.status ?? 'active'
+      // Determine effective status: local record wins, then SDK, then URL params.
+      let effective: HushLink['status']
+      if (local) {
+        effective = effectiveStatus(local)
+      } else if (remote) {
+        effective = remote.status
+      } else if (urlParams?.expiresAt && new Date(urlParams.expiresAt) < new Date()) {
+        effective = 'expired'
+      } else {
+        effective = 'active'
+      }
+
       const merged: LinkData = {
-        amountUsdc: local?.amountUsdc ?? remote?.amountUsdc ?? 0,
-        description: local?.description ?? remote?.description,
+        amountUsdc: local?.amountUsdc ?? remote?.amountUsdc ?? urlParams?.amountUsdc ?? 0,
+        description: local?.description ?? remote?.description ?? urlParams?.description,
         status: effective,
         network: local?.network,
         local: local ?? undefined,
@@ -96,27 +123,23 @@ export function ClaimPage({ token }: { token: string }) {
     return () => {
       cancelled = true
     }
-  }, [token, sdk])
+  }, [token, sdk, urlParams])
 
   async function onClaim() {
     if (!wallet.connected || !wallet.publicKey || !data || sdk.status !== 'ready') return
     setPhase('claiming')
     try {
-      const result = await claimPaymentLink(sdk.client, token)
+      const result = await claimPaymentLink(
+        sdk.client,
+        token,
+        urlParams ?? undefined
+      )
       const amount = result.amountUsdc > 0 ? result.amountUsdc : data.amountUsdc
       const record: ClaimedResult = {
         amountUsdc: amount,
         txSignature: result.txSignature,
       }
       setClaimed(record)
-
-      if (data.local) {
-        hushLinksStorage.update(data.local.id, {
-          status: 'claimed',
-          claimedAt: new Date().toISOString(),
-          claimTxSignature: result.txSignature,
-        })
-      }
       setPhase('success')
       toast.success('Payment claimed privately.')
     } catch (err) {

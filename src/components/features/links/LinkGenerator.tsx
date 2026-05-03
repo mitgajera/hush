@@ -59,6 +59,7 @@ export function LinkGenerator({ onGenerated }: Props) {
         token: 'USDC',
         description: parsed.data.description,
         expiresInSeconds,
+        senderAddress: wallet.publicKey.toBase58(),
       })
 
       const network = (process.env.NEXT_PUBLIC_SOLANA_NETWORK as Network | undefined) ?? 'devnet'
