@@ -34,7 +34,7 @@ export function CsvUploader({ onRows }: Props) {
         rows.map((r) => ({
           id: nanoid(8),
           name: r.name,
-          umbraAddress: r.umbra_address,
+          walletAddress: r.wallet_address,
           amountUsdc: r.amount,
         }))
       )
@@ -74,7 +74,7 @@ export function CsvUploader({ onRows }: Props) {
             Drop a CSV here or <span className="text-accent">browse</span>
           </p>
           <p className="text-xs text-fg-subtle">
-            Columns required: <span className="font-mono">name, umbra_address, amount</span>
+            Columns required: <span className="font-mono">name, wallet_address, amount</span>
           </p>
         </div>
         <Button

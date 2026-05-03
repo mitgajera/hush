@@ -4,7 +4,7 @@ import { payrollRecipientSchema } from './validation'
 
 export type CsvRow = {
   name: string
-  umbra_address: string
+  wallet_address: string
   amount: number
 }
 
@@ -15,7 +15,11 @@ export function parsePayrollCsv(text: string): {
   const parsed = Papa.parse<Record<string, unknown>>(text, {
     header: true,
     skipEmptyLines: true,
-    transformHeader: (h) => h.trim().toLowerCase(),
+    transformHeader: (h) => {
+      const normalized = h.trim().toLowerCase()
+      // Accept the old umbra_address column name for backwards compatibility
+      return normalized === 'umbra_address' ? 'wallet_address' : normalized
+    },
   })
 
   const rows: CsvRow[] = []
@@ -34,7 +38,7 @@ export function generateRunReceiptCsv(run: PayrollRun): string {
   const headers = [
     'run_id',
     'recipient_name',
-    'umbra_address',
+    'wallet_address',
     'amount_usdc',
     'status',
     'tx_signature',
@@ -42,7 +46,7 @@ export function generateRunReceiptCsv(run: PayrollRun): string {
   const rows = run.recipients.map((r) => [
     run.id,
     r.name,
-    r.umbraAddress,
+    r.walletAddress,
     String(r.amountUsdc),
     r.status,
     r.txSignature ?? '',

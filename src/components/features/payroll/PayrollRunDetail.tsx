@@ -57,7 +57,7 @@ export function PayrollRunDetail({ run }: { run: PayrollRun }) {
               <tr key={r.id} className="border-t border-border align-middle">
                 <td className="px-3 py-2 text-fg">{r.name}</td>
                 <td className="px-3 py-2">
-                  <TruncatedAddress address={r.umbraAddress} />
+                  <TruncatedAddress address={r.walletAddress} />
                 </td>
                 <td className="px-3 py-2 text-right">
                   <MaskedAmount id={`detail-${run.id}-${r.id}`} amount={r.amountUsdc} />

@@ -8,7 +8,7 @@ import { draftRecipientSchema } from '@/lib/utils/validation'
 import { cn } from '@/lib/utils/cn'
 import type { DraftRecipient } from '@/types'
 
-type RowIssue = { field: 'name' | 'umbraAddress' | 'amountUsdc'; message: string }
+type RowIssue = { field: 'name' | 'walletAddress' | 'amountUsdc'; message: string }
 
 export function validateRecipient(r: DraftRecipient): RowIssue | null {
   const parsed = draftRecipientSchema.safeParse(r)
@@ -40,7 +40,7 @@ export function RecipientPreviewTable({
           <thead className="bg-bg-surface text-fg-muted">
             <tr>
               <th className="px-3 py-2 text-left text-2xs font-medium uppercase tracking-wide">Name</th>
-              <th className="px-3 py-2 text-left text-2xs font-medium uppercase tracking-wide">Umbra address</th>
+              <th className="px-3 py-2 text-left text-2xs font-medium uppercase tracking-wide">Wallet address</th>
               <th className="px-3 py-2 text-right text-2xs font-medium uppercase tracking-wide">Amount (USDC)</th>
               {editable && onRemove && <th className="w-10 px-3 py-2" aria-label="Remove" />}
             </tr>
@@ -74,18 +74,18 @@ export function RecipientPreviewTable({
                   <td className="px-3 py-2">
                     {editable && onChange ? (
                       <input
-                        value={r.umbraAddress}
+                        value={r.walletAddress}
                         onChange={(e) =>
-                          onChange(r.id, { umbraAddress: e.target.value.trim() })
+                          onChange(r.id, { walletAddress: e.target.value.trim() })
                         }
                         className={cn(
                           'h-8 w-full rounded-md border bg-bg px-2 font-mono text-xs text-fg outline-none transition-colors focus:border-border-strong',
-                          issue?.field === 'umbraAddress' ? 'border-danger' : 'border-border'
+                          issue?.field === 'walletAddress' ? 'border-danger' : 'border-border'
                         )}
-                        placeholder="umb1…"
+                        placeholder="Solana wallet address…"
                       />
                     ) : (
-                      <TruncatedAddress address={r.umbraAddress} />
+                      <TruncatedAddress address={r.walletAddress} />
                     )}
                   </td>
                   <td className="px-3 py-2 text-right">

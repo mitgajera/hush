@@ -172,7 +172,7 @@ export function PayrollProgressModal({ runId, onClose }: Props) {
                   <p className="truncate text-sm text-fg">{r.name}</p>
                   <div className="flex items-center gap-2 text-2xs text-fg-subtle">
                     <TruncatedAddress
-                      address={r.umbraAddress}
+                      address={r.walletAddress}
                       showCopy={false}
                       monospace
                     />

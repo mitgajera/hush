@@ -45,7 +45,7 @@ export async function runPayroll(
 
     try {
       const result = await sendConfidentialTransfer(client, {
-        to: recipient.umbraAddress,
+        to: recipient.walletAddress,
         amountUsdc: recipient.amountUsdc,
         token: 'USDC',
       })

@@ -49,7 +49,7 @@ export function RunPayrollButton({ recipients, onRunCreated }: Props) {
       recipients: recipients.map<PayrollRecipient>((r) => ({
         id: r.id,
         name: r.name,
-        umbraAddress: r.umbraAddress,
+        walletAddress: r.walletAddress,
         amountUsdc: r.amountUsdc,
         status: 'pending',
       })),

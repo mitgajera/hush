@@ -1,7 +1,7 @@
 export type PayrollRecipient = {
   id: string
   name: string
-  umbraAddress: string
+  walletAddress: string
   amountUsdc: number
   status: 'pending' | 'sending' | 'success' | 'failed'
   txSignature?: string
@@ -11,7 +11,7 @@ export type PayrollRecipient = {
 export type DraftRecipient = {
   id: string
   name: string
-  umbraAddress: string
+  walletAddress: string
   amountUsdc: number
 }
 

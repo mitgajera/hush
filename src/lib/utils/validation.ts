@@ -1,11 +1,12 @@
 import { z } from 'zod'
 
-export const umbraAddressRegex = /^umb1[a-zA-Z0-9]{38,}$/
+// Solana base58 public key: 32–44 chars, no 0/O/I/l
+export const solanaAddressRegex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/
 
-export const umbraAddressSchema = z
+export const solanaAddressSchema = z
   .string()
   .trim()
-  .regex(umbraAddressRegex, 'Invalid Umbra address')
+  .regex(solanaAddressRegex, 'Invalid Solana wallet address')
 
 export const usdcAmountSchema = z.coerce
   .number()
@@ -13,21 +14,21 @@ export const usdcAmountSchema = z.coerce
 
 export const payrollRecipientSchema = z.object({
   name: z.string().trim().min(1, 'Name is required'),
-  umbra_address: umbraAddressSchema,
+  wallet_address: solanaAddressSchema,
   amount: usdcAmountSchema,
 })
 
 export const draftRecipientSchema = z.object({
   id: z.string(),
   name: z.string().trim().min(1, 'Name is required'),
-  umbraAddress: umbraAddressSchema,
+  walletAddress: solanaAddressSchema,
   amountUsdc: usdcAmountSchema,
 })
 
 export const projectSchema = z.object({
   name: z.string().trim().min(1, 'Project name is required'),
   clientDescription: z.string().trim().max(240).optional(),
-  contractorAddress: umbraAddressSchema,
+  contractorAddress: solanaAddressSchema,
 })
 
 export const milestoneSchema = z.object({

@@ -13,7 +13,7 @@ type Props = {
 }
 
 function makeRow(): DraftRecipient {
-  return { id: nanoid(8), name: '', umbraAddress: '', amountUsdc: 0 }
+  return { id: nanoid(8), name: '', walletAddress: '', amountUsdc: 0 }
 }
 
 export function ManualEntryTable({ recipients, onChange }: Props) {
