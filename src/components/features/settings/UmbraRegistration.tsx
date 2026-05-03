@@ -131,15 +131,14 @@ export function UmbraRegistration() {
             <p className="text-2xs text-danger">{status.error.message}</p>
           )}
 
-          {!isRegistered && (
-            <Button
-              onClick={register}
-              loading={registering}
-              disabled={status.status !== 'ready'}
-            >
-              Register with Umbra
-            </Button>
-          )}
+          <Button
+            onClick={register}
+            loading={registering}
+            disabled={status.status !== 'ready'}
+            variant={isRegistered ? 'secondary' : 'primary'}
+          >
+            {isRegistered ? 'Re-register (update)' : 'Register with Umbra'}
+          </Button>
         </div>
       )}
     </Card>

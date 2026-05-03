@@ -36,8 +36,28 @@ export async function queryRegistrationStatus(
  * that ran — empty if already fully registered, 1–3 otherwise.
  */
 export async function registerUser(client: IUmbraClient): Promise<string[]> {
-  const sdk = await import('@umbra-privacy/sdk')
-  const register = sdk.getUserRegistrationFunction({ client })
-  const signatures = await register({ confidential: true, anonymous: false })
-  return signatures.map(String)
+  const [sdk, proverPkg] = await Promise.all([
+    import('@umbra-privacy/sdk'),
+    import('@umbra-privacy/web-zk-prover'),
+  ])
+  const zkProver = proverPkg.getUserRegistrationProver({
+    assetProvider: proverPkg.getCdnZkAssetProvider(),
+  })
+  const register = sdk.getUserRegistrationFunction({ client }, { zkProver })
+  try {
+    const signatures = await register({ confidential: true, anonymous: true })
+    return signatures.map(String)
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    // "already been processed" means the registration transaction landed in a
+    // prior session. Treat it as success — the on-chain state IS registered.
+    if (
+      msg.includes('already been processed') ||
+      msg.includes('AlreadyProcessed') ||
+      msg.includes('already processed')
+    ) {
+      return []
+    }
+    throw err
+  }
 }
