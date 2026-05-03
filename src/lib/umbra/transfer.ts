@@ -4,11 +4,7 @@ import type { getUmbraClient } from '@umbra-privacy/sdk'
 type IUmbraClient = Awaited<ReturnType<typeof getUmbraClient>>
 
 import type { ConfidentialTransferParams, ConfidentialTransferResult } from './types'
-import { toRawUsdc } from '@/lib/utils/format'
-
-function usdcMint(): string {
-  return process.env.NEXT_PUBLIC_USDC_MINT ?? '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'
-}
+import { getTokenMint, toRawAmount } from '@/lib/token'
 
 export async function sendConfidentialTransfer(
   client: IUmbraClient,
@@ -29,9 +25,9 @@ export async function sendConfidentialTransfer(
   )
 
   const result = await createUtxo({
-    amount: toRawUsdc(params.amountUsdc) as never,
+    amount: toRawAmount(params.amountUsdc) as never,
     destinationAddress: params.to as never,
-    mint: usdcMint() as never,
+    mint: getTokenMint() as never,
   })
 
   return {

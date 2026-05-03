@@ -18,6 +18,7 @@ export type PaymentLinkParams = {
   token: 'USDC'
   description?: string
   expiresInSeconds?: number
+  senderAddress?: string
 }
 
 export type PaymentLinkResult = {

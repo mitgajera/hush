@@ -2,20 +2,13 @@
 
 import type { getUmbraClient } from '@umbra-privacy/sdk'
 type IUmbraClient = Awaited<ReturnType<typeof getUmbraClient>>
-import { fromRawUsdc } from '@/lib/utils/format'
+import { getTokenMint, fromRawAmount } from '@/lib/token'
 
 export type EncryptedBalanceState =
   | { state: 'non_existent' }
   | { state: 'uninitialized' }
   | { state: 'mxe' }
   | { state: 'shared'; amountUsdc: number }
-
-function usdcMint(): string {
-  return (
-    process.env.NEXT_PUBLIC_USDC_MINT ??
-    '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'
-  )
-}
 
 /**
  * Queries the user's encrypted USDC balance.
@@ -33,13 +26,13 @@ export async function queryEncryptedUsdcBalance(
   const sdk = await import('@umbra-privacy/sdk')
   const query = sdk.getEncryptedBalanceQuerierFunction({ client })
   // SDK uses Address (string) keys; our env value is already base58 text.
-  const results = await query([usdcMint() as never])
+  const results = await query([getTokenMint() as never])
 
   for (const [, result] of results) {
     const state = result.state
     if (state === 'shared') {
       const raw = (result as { balance: bigint }).balance
-      return { state: 'shared', amountUsdc: fromRawUsdc(raw) }
+      return { state: 'shared', amountUsdc: fromRawAmount(raw) }
     }
     if (state === 'mxe') return { state: 'mxe' }
     if (state === 'uninitialized') return { state: 'uninitialized' }

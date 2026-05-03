@@ -45,7 +45,7 @@ export async function decryptWithViewingKey(
       if (recipient.status !== 'success') continue
       transfers.push({
         from: run.senderAddress,
-        to: recipient.umbraAddress,
+        to: recipient.walletAddress,
         amountUsdc: recipient.amountUsdc,
         timestamp: run.completedAt ?? run.createdAt,
         memo: recipient.name,
