@@ -14,11 +14,11 @@ import { projectsStorage } from '@/lib/storage/projects'
 import { auditKeysStorage } from '@/lib/storage/auditKeys'
 
 const FAKE_ADDRS = [
-  'umb1qy2kxd8k3jrh9w4mn5p7vlz2c6fx8brqhjnkm4a2qw0',
-  'umb1a7sd92kfn3l5b6vc0x4mn8pqr7tyz2hjk9wldpxbcf1',
-  'umb1p5r8tm4k2jnx9v3q7cfhwzb6d8l0yseawoiq2nmpkj4',
-  'umb1kx7fz9d3qm2nb5vp8rhtwlcjy4a6s0uieg1xoqkmnhp',
-  'umb1bxn4m8k2wjhrzqp9vctfld6y3s0a5ue7igkqoxmnpwh',
+  '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU',
+  'DRpbCBMxVnDK7maPGv7MvjgGpR9bq4mKHNGY9dPZGD9K',
+  'GsbwXfJraMomNxBcpR3wo4QJ6A9Hq5GUr9e1UdKGpMwp',
+  'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJe1bsn',
+  'HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH',
 ]
 
 function daysAgoIso(days: number): string {
@@ -41,7 +41,7 @@ function makeRun(
   const recipients: PayrollRecipient[] = amounts.map((a, i) => ({
     id: 'rec_' + nanoid(8),
     name: a.name,
-    umbraAddress: addr(index * 10 + i),
+    walletAddress: addr(index * 10 + i),
     amountUsdc: a.amount,
     status: 'success',
     txSignature: 'demo_' + nanoid(24),

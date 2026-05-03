@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/Input'
 import { useUmbraSdkClient } from '@/hooks/useUmbraSdkClient'
 import { useEncryptedUsdcBalance } from '@/hooks/useEncryptedBalance'
 import { depositUsdcToEncryptedBalance } from '@/lib/umbra/deposit'
+import { getTokenSymbol } from '@/lib/token'
 
 export function DepositPanel() {
   const sdk = useUmbraSdkClient()
@@ -17,6 +18,8 @@ export function DepositPanel() {
   const [loading, setLoading] = useState(false)
 
   if (sdk.status !== 'ready') return null
+
+  const symbol = getTokenSymbol()
 
   async function handleDeposit() {
     if (sdk.status !== 'ready') return
@@ -28,7 +31,7 @@ export function DepositPanel() {
     setLoading(true)
     try {
       const sig = await depositUsdcToEncryptedBalance(sdk.client, parsed)
-      toast.success(`Deposited ${parsed} USDC to encrypted balance.`, {
+      toast.success(`Deposited ${parsed} ${symbol} to encrypted balance.`, {
         description: sig.slice(0, 16) + '…',
       })
       setAmount('')
@@ -45,7 +48,7 @@ export function DepositPanel() {
       <div>
         <h3 className="text-sm font-medium text-fg">Deposit to encrypted balance</h3>
         <p className="mt-1 text-xs text-fg-muted">
-          Move public USDC from your wallet into your private Umbra balance. Required before
+          Move public {symbol} from your wallet into your private Umbra balance. Required before
           sending private transfers or running payroll.
         </p>
       </div>
@@ -53,7 +56,7 @@ export function DepositPanel() {
       <div className="flex items-end gap-2">
         <div className="flex-1">
           <Input
-            label="Amount (USDC)"
+            label={`Amount (${symbol})`}
             type="number"
             inputMode="decimal"
             min={0}

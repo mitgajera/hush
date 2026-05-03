@@ -100,13 +100,12 @@ export function NewProjectDialog({ open, onOpenChange }: Props) {
           maxLength={240}
         />
         <Input
-          label="Contractor Umbra address"
-          placeholder="umb1…"
+          label="Contractor wallet address"
+          placeholder="Solana wallet address…"
           value={contractorAddress}
           onChange={(e) => setContractorAddress(e.target.value.trim())}
           className="font-mono text-xs"
-          focusHint="Umbra addresses start with umb1…"
-          valid={/^umb1[a-zA-Z0-9]{38,}$/.test(contractorAddress)}
+          valid={/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(contractorAddress)}
           error={errorField === 'contractorAddress' ? error ?? undefined : undefined}
         />
       </div>

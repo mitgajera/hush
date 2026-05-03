@@ -29,7 +29,7 @@ export function PrivacySettings() {
   }
 
   function seed() {
-    const addr = wallet.publicKey?.toBase58() ?? 'umb1demoxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    const addr = wallet.publicKey?.toBase58() ?? '11111111111111111111111111111111'
     seedDemoData(addr)
     toast.success('Demo data seeded.')
   }

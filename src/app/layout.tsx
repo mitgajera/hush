@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' })
 
 export const metadata: Metadata = {
-  title: 'Hush — private financial operations for Solana',
+  title: 'Hush | Private Financial Operations For Solana',
   description:
     'Every Solana payment is public. Hush changes that. Built on Umbra.',
 }
