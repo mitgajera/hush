@@ -44,6 +44,13 @@ export function ClaimSuccess({
       )}
 
       <div className="space-y-2">
+        <Link
+          href="/employee"
+          className="btn btn-primary h-11 w-full text-sm"
+        >
+          <Sparkles className="h-4 w-4" />
+          View my payment portal
+        </Link>
         <a
           href={UMBRA_WALLET_URL}
           target="_blank"
@@ -53,13 +60,6 @@ export function ClaimSuccess({
           <ExternalLink className="h-4 w-4" />
           View in Umbra Wallet
         </a>
-        <Link
-          href={`/credential/mint?payment=${encodeURIComponent(token)}`}
-          className="btn btn-primary h-11 w-full text-sm"
-        >
-          <Sparkles className="h-4 w-4" />
-          Mint your Hush credential
-        </Link>
       </div>
     </div>
   )

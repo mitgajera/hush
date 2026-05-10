@@ -12,6 +12,7 @@ import { ClaimSuccess } from './ClaimSuccess'
 import { useUmbraSdkClient } from '@/hooks/useUmbraSdkClient'
 import { claimPaymentLink, inspectPaymentLink, type UrlLinkParams } from '@/lib/umbra/paymentLink'
 import { hushLinksStorage } from '@/lib/storage/hushLinks'
+import { claimedPaymentsStorage } from '@/lib/storage/claimedPayments'
 import { effectiveStatus } from '@/lib/links/helpers'
 import { formatUsdc } from '@/lib/utils/format'
 import type { HushLink } from '@/types'
@@ -140,6 +141,20 @@ export function ClaimPage({ token }: { token: string }) {
         txSignature: result.txSignature,
       }
       setClaimed(record)
+
+      // Persist to employee payment history so the portal can show this claim.
+      const network = (data?.network ?? process.env.NEXT_PUBLIC_SOLANA_NETWORK ?? 'devnet') as import('@/types').Network
+      claimedPaymentsStorage.save({
+        id: result.txSignature,
+        linkToken: token,
+        amountUsdc: amount,
+        description: data?.description,
+        txSignature: result.txSignature,
+        claimedAt: new Date().toISOString(),
+        senderAddress: urlParams?.senderAddress,
+        network,
+      })
+
       setPhase('success')
       toast.success('Payment claimed privately.')
     } catch (err) {
