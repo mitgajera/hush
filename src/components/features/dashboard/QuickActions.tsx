@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { ArrowUpRight, CheckCircle2, LinkIcon, Users } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
 
 type Action = {
   href: string
@@ -37,18 +36,18 @@ export function QuickActions() {
         const Icon = action.icon
         return (
           <Link key={action.href} href={action.href} className="group block">
-            <Card className="flex h-full items-start gap-3 transition-colors group-hover:border-border-strong group-hover:bg-bg-elevated">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-accent/10 text-accent">
-                <Icon className="h-4 w-4" aria-hidden="true" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-medium text-fg">{action.title}</p>
-                  <ArrowUpRight className="h-4 w-4 text-fg-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-fg" />
-                </div>
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-bg-surface p-5 transition-all duration-200 hover:border-accent/20 hover:bg-accent/[0.03]">
+              <div className="flex items-start justify-between gap-3">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-accent/10 text-accent transition-colors group-hover:bg-accent/15">
+                  <Icon className="h-4 w-4" aria-hidden="true" />
+                </span>
+                <ArrowUpRight className="h-4 w-4 text-fg-subtle opacity-0 transition-all duration-150 group-hover:translate-x-0.5 group-hover:opacity-100 group-hover:text-accent" />
+              </div>
+              <div className="mt-4">
+                <p className="text-sm font-medium text-fg">{action.title}</p>
                 <p className="mt-1 text-xs text-fg-muted">{action.description}</p>
               </div>
-            </Card>
+            </div>
           </Link>
         )
       })}

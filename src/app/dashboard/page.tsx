@@ -4,8 +4,6 @@ import { MetricCards } from '@/components/features/dashboard/MetricCards'
 import { QuickActions } from '@/components/features/dashboard/QuickActions'
 import { RecentActivity } from '@/components/features/dashboard/RecentActivity'
 import { WalletCard } from '@/components/features/dashboard/WalletCard'
-import { PrivateBadge } from '@/components/ui/PrivateBadge'
-import { COPY } from '@/constants/content'
 
 export default function DashboardPage() {
   return (
@@ -19,23 +17,14 @@ export default function DashboardPage() {
         <MetricCards />
 
         <section className="space-y-3">
-          <h3 className="text-sm font-medium text-fg">Quick actions</h3>
+          <p className="text-2xs font-medium uppercase tracking-widest text-fg-subtle">Quick actions</p>
           <QuickActions />
         </section>
 
-        <section className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px]">
+        <section className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_300px]">
           <RecentActivity />
           <WalletCard />
         </section>
-
-        <footer className="mt-4 flex items-center justify-between gap-3 rounded-lg border border-border bg-bg-surface px-4 py-3 text-xs text-fg-muted">
-          <div className="flex items-center gap-2">
-            <PrivateBadge />
-            <span>{COPY.privateBanner}</span>
-            <span className="hidden text-fg-subtle sm:inline">·</span>
-            <span className="hidden text-fg-subtle sm:inline">{COPY.poweredBy}</span>
-          </div>
-        </footer>
       </div>
     </Shell>
   )

@@ -29,9 +29,15 @@
   html, html.dark { color-scheme: dark; }
 
   body {
-    @apply bg-bg text-fg font-sans antialiased;
-    font-weight: 400;
+    @apply bg-bg text-fg antialiased;
     font-feature-settings: 'ss01', 'cv11', 'kern';
+    /* subtle dot-grid texture */
+    background-image: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.018) 1px,
+      transparent 1px
+    );
+    background-size: 28px 28px;
   }
 
   h1, h2, h3, h4, h5, h6 {

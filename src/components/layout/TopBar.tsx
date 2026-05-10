@@ -17,8 +17,8 @@ export function TopBar() {
   const title = titleFor(pathname)
 
   return (
-    <header className="sticky top-0 z-20 flex h-[52px] items-center justify-between border-b border-border bg-bg/80 px-6 backdrop-blur">
-      <h1 className="text-sm font-medium text-fg">{title}</h1>
+    <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-white/[0.06] bg-bg/80 px-6 backdrop-blur-md">
+      <h1 className="text-sm font-semibold tracking-tight text-fg">{title}</h1>
       <div className="flex items-center gap-2">
         <GlobalRevealToggle />
         <NetworkPill />

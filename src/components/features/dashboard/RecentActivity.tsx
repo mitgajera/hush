@@ -129,37 +129,39 @@ export function RecentActivity() {
   }, [runs, links, projects, auditKeys])
 
   return (
-    <Card className="flex h-full flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-fg">Recent activity</h3>
-        <span className="text-2xs uppercase tracking-wide text-fg-subtle">
-          latest {items.length || 0}
+    <div className="overflow-hidden rounded-2xl border border-white/[0.07] bg-bg-surface">
+      <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
+        <h3 className="text-sm font-semibold text-fg">Recent activity</h3>
+        <span className="text-2xs uppercase tracking-widest text-fg-subtle">
+          Latest {items.length}
         </span>
       </div>
 
       {items.length === 0 ? (
-        <EmptyState
-          title="No activity yet"
-          description="Your payroll runs, links, milestones, and audit keys will appear here."
-        />
+        <div className="px-5 py-6">
+          <EmptyState
+            title="No activity yet"
+            description="Your payroll runs, links, milestones, and audit keys will appear here."
+          />
+        </div>
       ) : (
-        <ul className="divide-y divide-border">
+        <ul>
           {items.map((item) => {
             const Icon = item.icon
             return (
-              <li key={item.id}>
+              <li key={item.id} className="border-b border-white/[0.05] last:border-0">
                 <Link
                   href={item.href}
-                  className="flex items-center gap-3 py-3 transition-colors hover:bg-bg-elevated/40"
+                  className="flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-white/[0.02]"
                 >
-                  <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-bg-elevated text-fg-muted">
-                    <Icon className="h-4 w-4" aria-hidden="true" />
+                  <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/[0.07] bg-bg-elevated text-fg-muted">
+                    <Icon className="h-3.5 w-3.5" aria-hidden="true" />
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm text-fg">{item.title}</p>
-                    <p className="text-2xs text-fg-subtle">
-                      <span className="uppercase tracking-wide">{KIND_LABEL[item.kind]}</span>
-                      <span className="mx-1">·</span>
+                    <p className="mt-0.5 text-2xs text-fg-subtle">
+                      <span className="font-medium uppercase tracking-wider text-fg-muted">{KIND_LABEL[item.kind]}</span>
+                      <span className="mx-1.5 text-fg-subtle/50">·</span>
                       <span title={fullTimestamp(item.timestamp)}>
                         {relativeTime(item.timestamp)}
                       </span>
@@ -177,6 +179,6 @@ export function RecentActivity() {
           })}
         </ul>
       )}
-    </Card>
+    </div>
   )
 }
