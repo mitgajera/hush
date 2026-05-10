@@ -42,6 +42,16 @@ export default {
         md: '8px',
         lg: '12px',
         xl: '16px',
+        '2xl': '20px',
+        '3xl': '28px',
+        full: '9999px',
+      },
+      boxShadow: {
+        'glow-accent': '0 0 20px rgba(0,179,255,0.35)',
+        'glow-accent-lg': '0 0 40px rgba(0,179,255,0.50)',
+        'glow-success': '0 0 16px rgba(34,197,94,0.30)',
+        'btn-primary': '0 0 20px rgba(0,179,255,0.30),inset 0 0 10px rgba(255,255,255,0.15)',
+        'btn-primary-hover': '0 0 32px rgba(0,179,255,0.50),inset 0 0 14px rgba(255,255,255,0.22)',
       },
       animation: {
         'fade-in': 'fadeIn 150ms ease-out',

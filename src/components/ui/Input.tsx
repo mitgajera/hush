@@ -73,15 +73,15 @@ export const Input = forwardRef<HTMLInputElement, Props>(function Input(
             onBlur?.(e)
           }}
           className={cn(
-            'w-full h-9 rounded-md bg-bg-surface border text-sm text-fg placeholder:text-fg-subtle',
-            'focus:bg-bg outline-none transition-colors',
-            leftIcon ? 'pl-8' : 'pl-3',
-            effectiveRightIcon ? 'pr-8' : 'pr-3',
+            'w-full h-10 rounded-xl bg-bg-elevated border text-sm text-fg placeholder:text-fg-subtle',
+            'outline-none transition-all duration-150',
+            leftIcon ? 'pl-8' : 'pl-3.5',
+            effectiveRightIcon ? 'pr-8' : 'pr-3.5',
             error
-              ? 'border-danger focus:border-danger'
+              ? 'border-danger focus:border-danger focus:shadow-[0_0_0_3px_rgba(234,56,76,0.12)]'
               : valid
-              ? 'border-success/40 focus:border-success/60'
-              : 'border-border focus:border-border-strong',
+              ? 'border-success/40 focus:border-success/60 focus:shadow-[0_0_0_3px_rgba(34,197,94,0.12)]'
+              : 'border-white/8 focus:border-accent/50 focus:shadow-[0_0_0_3px_rgba(0,179,255,0.12)]',
             className
           )}
           {...rest}

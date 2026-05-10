@@ -57,10 +57,10 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-2 rounded-md px-2.5 py-2 text-sm transition-colors',
+                'flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm transition-all duration-150',
                 active
-                  ? 'bg-bg-elevated text-fg'
-                  : 'text-fg-muted hover:bg-bg-elevated/60 hover:text-fg'
+                  ? 'bg-accent/[0.08] text-fg border border-accent/20'
+                  : 'text-fg-muted border border-transparent hover:bg-white/[0.04] hover:text-fg'
               )}
             >
               <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -75,10 +75,10 @@ export function Sidebar() {
         <Link
           href={SETTINGS_ITEM.href}
           className={cn(
-            'flex items-center gap-2 rounded-md px-2.5 py-2 text-sm transition-colors',
+            'flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm transition-all duration-150',
             isActive(pathname, SETTINGS_ITEM.href)
-              ? 'bg-bg-elevated text-fg'
-              : 'text-fg-muted hover:bg-bg-elevated/60 hover:text-fg'
+              ? 'bg-accent/[0.08] text-fg border border-accent/20'
+              : 'text-fg-muted border border-transparent hover:bg-white/[0.04] hover:text-fg'
           )}
         >
           <SETTINGS_ITEM.icon className="h-4 w-4" aria-hidden="true" />

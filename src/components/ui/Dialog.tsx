@@ -33,7 +33,7 @@ export function Dialog({
         <RadixDialog.Content
           className={cn(
             'fixed z-50 left-1/2 top-1/2 w-[calc(100vw-32px)] max-w-md -translate-x-1/2 -translate-y-1/2',
-            'bg-bg-elevated border border-border rounded-lg p-6 shadow-xl animate-fade-in',
+            'bg-bg-elevated border border-white/[0.07] rounded-2xl p-6 shadow-xl shadow-black/40 animate-fade-in',
             className
           )}
         >

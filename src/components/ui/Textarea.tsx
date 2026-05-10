@@ -27,9 +27,11 @@ export const Textarea = forwardRef<HTMLTextAreaElement, Props>(function Textarea
         ref={ref}
         id={textareaId}
         className={cn(
-          'w-full min-h-[80px] rounded-md bg-bg-surface border px-3 py-2 text-sm text-fg',
-          'placeholder:text-fg-subtle focus:bg-bg outline-none transition-colors',
-          error ? 'border-danger focus:border-danger' : 'border-border focus:border-border-strong',
+          'w-full min-h-[80px] rounded-xl bg-bg-elevated border px-3.5 py-2.5 text-sm text-fg',
+          'placeholder:text-fg-subtle outline-none transition-all duration-150',
+          error
+            ? 'border-danger focus:border-danger focus:shadow-[0_0_0_3px_rgba(234,56,76,0.12)]'
+            : 'border-white/8 focus:border-accent/50 focus:shadow-[0_0_0_3px_rgba(0,179,255,0.12)]',
           className
         )}
         {...rest}

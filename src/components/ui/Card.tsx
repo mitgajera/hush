@@ -25,7 +25,7 @@ export function Card({
   return (
     <div
       className={cn(
-        'rounded-lg border border-border',
+        'rounded-2xl border border-white/[0.07]',
         variant === 'elevated' ? 'bg-bg-elevated' : 'bg-bg-surface',
         pad,
         className

@@ -4,88 +4,120 @@
 
 @layer base {
   :root {
-    /* Light mode (used only if user toggles) */
-    --bg: 255 255 255;
-    --bg-surface: 250 250 249;
-    --bg-elevated: 245 245 244;
-    --fg: 15 15 15;
-    --fg-muted: 100 100 100;
-    --fg-subtle: 150 150 150;
-    --border: 230 230 230;
-    --border-strong: 200 200 200;
-    --accent: 29 158 117;      /* teal-green — private signal */
-    --accent-muted: 225 245 238;
-    --success: 29 158 117;
-    --warning: 186 117 23;
-    --danger: 162 49 49;
-    --info: 24 95 165;
+    /* ── Umbra dark palette (default) ─────────────────────────────────────── */
+    --bg:           11  12  14;    /* #0B0C0E — Umbra base */
+    --bg-surface:   15  17  20;    /* #0F1114 — cards, sidebar */
+    --bg-elevated:  22  25  30;    /* #16191E — inputs, hover surfaces */
+
+    --fg:           240 244 248;   /* #F0F4F8 — primary text */
+    --fg-muted:     130 148 166;   /* #8294A6 — secondary text */
+    --fg-subtle:     60  75  90;   /* #3C4B5A — placeholder / hint */
+
+    --border:        28  33  40;   /* #1C2128 — default border */
+    --border-strong: 45  54  65;   /* #2D3641 — strong border */
+
+    --accent:         0 179 255;   /* #00B3FF — Umbra brand cyan */
+    --accent-muted:   0  28  45;   /* #001C2D — dark cyan tint */
+
+    --success:       34 197  94;   /* #22C55E */
+    --warning:      245 158  11;   /* #F59E0B */
+    --danger:       234  56  76;   /* #EA384C — Umbra's red */
+    --info:           0 179 255;   /* same as accent */
   }
 
-  .dark {
-    /* Dark mode — DEFAULT */
-    --bg: 15 15 15;            /* near-black, not pure */
-    --bg-surface: 26 26 26;
-    --bg-elevated: 36 36 36;
-    --fg: 245 245 245;
-    --fg-muted: 160 160 160;
-    --fg-subtle: 110 110 110;
-    --border: 45 45 45;
-    --border-strong: 70 70 70;
-    --accent: 74 200 158;      /* slightly desaturated green for dark */
-    --accent-muted: 29 40 35;
-    --success: 74 200 158;
-    --warning: 240 176 64;
-    --danger: 232 90 90;
-    --info: 88 160 240;
-  }
-
-  html { color-scheme: dark; }
-  html.dark { color-scheme: dark; }
+  /* No light mode toggle — Umbra is always dark */
+  html, html.dark { color-scheme: dark; }
 
   body {
     @apply bg-bg text-fg font-sans antialiased;
-    font-feature-settings: 'ss01', 'cv11';
+    font-feature-settings: 'ss01', 'cv11', 'kern';
   }
 
-  /* All numeric amounts render in mono */
+  /* Tight letter-spacing on all heading levels (Umbra/Interdisplay feel) */
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.025em;
+  }
+
+  /* Numeric amounts always in mono */
   .amount { @apply font-mono tabular-nums; }
 
-  /* Reusable focus ring */
+  /* Focus ring — Umbra cyan */
   :focus-visible {
-    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-bg;
+    @apply outline-none ring-2 ring-accent/60 ring-offset-2 ring-offset-bg;
   }
+
+  /* Thin scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { @apply rounded-full bg-border-strong; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-fg-subtle; }
 }
 
 @layer components {
+  /* ── Buttons ────────────────────────────────────────────────────────────── */
+
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-3 py-2
-           rounded-md text-sm font-medium transition-colors
-           disabled:opacity-40 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2
+           rounded-full text-sm font-medium transition-all duration-200
+           disabled:opacity-40 disabled:cursor-not-allowed select-none;
   }
+
   .btn-primary {
-    @apply btn bg-accent text-bg hover:opacity-90;
+    @apply btn bg-accent text-[#0B0C0E] font-semibold
+           shadow-[0_0_20px_rgba(0,179,255,0.30),inset_0_0_10px_rgba(255,255,255,0.15)]
+           hover:shadow-[0_0_32px_rgba(0,179,255,0.50),inset_0_0_14px_rgba(255,255,255,0.22)]
+           hover:brightness-110 active:scale-[0.98];
   }
+
   .btn-secondary {
-    @apply btn border border-border hover:bg-bg-surface;
+    @apply btn border border-white/10 text-fg bg-white/[0.03]
+           hover:bg-white/[0.07] hover:border-white/20;
   }
+
   .btn-ghost {
-    @apply btn hover:bg-bg-surface;
+    @apply btn text-fg-muted hover:text-fg hover:bg-white/[0.05];
   }
+
   .btn-danger {
-    @apply btn bg-danger text-white hover:opacity-90;
+    @apply btn bg-danger text-white
+           shadow-[0_0_16px_rgba(234,56,76,0.25)]
+           hover:shadow-[0_0_24px_rgba(234,56,76,0.40)]
+           hover:brightness-110 active:scale-[0.98];
   }
+
+  /* ── Inputs ─────────────────────────────────────────────────────────────── */
 
   .input {
-    @apply w-full h-9 px-3 rounded-md bg-bg-surface border border-border
-           text-sm placeholder:text-fg-subtle
-           focus:border-border-strong focus:bg-bg;
+    @apply w-full h-10 px-3.5 rounded-xl bg-bg-elevated border border-white/8
+           text-sm text-fg placeholder:text-fg-subtle
+           focus:outline-none focus:border-accent/50 focus:bg-bg-elevated
+           focus:shadow-[0_0_0_3px_rgba(0,179,255,0.12)]
+           transition-all duration-150;
   }
 
+  /* ── Cards ──────────────────────────────────────────────────────────────── */
+
   .card {
-    @apply bg-bg-surface border border-border rounded-lg p-4;
+    @apply bg-bg-surface border border-white/[0.07] rounded-2xl p-5;
   }
 
   .card-elevated {
-    @apply bg-bg-elevated border border-border rounded-lg p-4;
+    @apply bg-bg-elevated border border-white/[0.07] rounded-2xl p-5;
+  }
+}
+
+/* ── Utility: Umbra glow effects ────────────────────────────────────────── */
+@layer utilities {
+  .glow-accent {
+    box-shadow: 0 0 20px rgba(0, 179, 255, 0.35);
+  }
+  .glow-accent-lg {
+    box-shadow: 0 0 40px rgba(0, 179, 255, 0.50);
+  }
+  .glow-success {
+    box-shadow: 0 0 16px rgba(34, 197, 94, 0.30);
+  }
+  .border-white\/8 {
+    border-color: rgba(255, 255, 255, 0.08);
   }
 }
