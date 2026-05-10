@@ -8,6 +8,7 @@ import {
   Zap,
   Lock,
 } from 'lucide-react'
+import { HushLogo } from '@/components/ui/HushLogo'
 
 export default function LandingPage() {
   return (
@@ -24,7 +25,7 @@ export default function LandingPage() {
 
       {/* ── Nav ───────────────────────────────────────────────────────────── */}
       <header className="relative z-10 flex items-center justify-between px-6 py-5 md:px-12">
-        <span className="text-lg font-semibold tracking-tight text-fg">hush.</span>
+        <HushLogo size="md" />
         <nav className="hidden items-center gap-6 text-sm text-fg-muted md:flex">
           <Link href="#features" className="hover:text-fg transition-colors">Features</Link>
           <Link href="#how" className="hover:text-fg transition-colors">How it works</Link>
@@ -229,7 +230,7 @@ export default function LandingPage() {
       {/* ── Footer ────────────────────────────────────────────────────────── */}
       <footer className="relative z-10 border-t border-white/[0.05] px-6 py-8">
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
-          <span className="text-sm font-medium text-fg">hush.</span>
+          <HushLogo size="sm" />
           <p className="text-xs text-fg-subtle">Powered by Umbra · All payments private by default</p>
           <div className="flex items-center gap-4 text-xs text-fg-subtle">
             <Link href="/dashboard" className="hover:text-fg-muted transition-colors">App</Link>

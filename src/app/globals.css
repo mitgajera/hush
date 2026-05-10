@@ -30,11 +30,12 @@
 
   body {
     @apply bg-bg text-fg font-sans antialiased;
+    font-weight: 400;
     font-feature-settings: 'ss01', 'cv11', 'kern';
   }
 
-  /* Tight letter-spacing on all heading levels (Umbra/Interdisplay feel) */
   h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
     letter-spacing: -0.025em;
   }
 

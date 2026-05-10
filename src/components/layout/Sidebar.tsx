@@ -6,7 +6,7 @@ import { ExternalLink } from 'lucide-react'
 import { NAV_ITEMS, SETTINGS_ITEM } from '@/constants/navigation'
 import { useHushLinks } from '@/hooks/useHushLinks'
 import { useProjects } from '@/hooks/useProjects'
-import { PrivateBadge } from '@/components/ui/PrivateBadge'
+import { HushLogo } from '@/components/ui/HushLogo'
 import { cn } from '@/lib/utils/cn'
 
 function isActive(pathname: string, href: string) {
@@ -41,10 +41,9 @@ export function Sidebar() {
   return (
     <aside className="hidden w-[220px] shrink-0 flex-col border-r border-border bg-bg-surface md:flex">
       <div className="flex items-center justify-between px-4 py-4">
-        <Link href="/dashboard" className="text-sm font-medium text-fg">
-          hush.
+        <Link href="/dashboard">
+          <HushLogo size="sm" />
         </Link>
-        <PrivateBadge size="sm" />
       </div>
 
       <nav className="flex-1 space-y-0.5 px-2 py-2">

@@ -4,7 +4,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 import { Wallet } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { PrivateBadge } from '@/components/ui/PrivateBadge'
+import { HushLogo } from '@/components/ui/HushLogo'
 import { RevealProvider } from '@/contexts/RevealContext'
 import { WalletAddressCard } from '@/components/features/employee/WalletAddressCard'
 import { ReceivedPaymentsTable } from '@/components/features/employee/ReceivedPaymentsTable'
@@ -17,16 +17,11 @@ function PortalContent() {
     <div className="flex min-h-screen flex-col bg-bg">
       {/* Header */}
       <header className="flex items-center justify-between border-b border-border bg-bg-surface px-6 py-3">
-        <div className="flex items-center gap-2">
-          <span
-            aria-hidden="true"
-            className="h-2 w-2 rounded-full bg-accent shadow-[0_0_0_2px_rgba(74,200,158,0.2)]"
-          />
-          <span className="text-sm font-medium text-fg">hush.</span>
+        <div className="flex items-center gap-2.5">
+          <HushLogo size="sm" />
           <span className="hidden text-xs text-fg-subtle sm:inline">· Employee portal</span>
         </div>
         <div className="flex items-center gap-3">
-          <PrivateBadge />
           {wallet.connected && wallet.publicKey ? (
             <button
               type="button"
