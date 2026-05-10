@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { ExternalLink } from 'lucide-react'
 import { NAV_ITEMS, SETTINGS_ITEM } from '@/constants/navigation'
 import { useHushLinks } from '@/hooks/useHushLinks'
 import { useProjects } from '@/hooks/useProjects'
@@ -85,9 +86,15 @@ export function Sidebar() {
         </Link>
       </div>
 
-      <div className="border-t border-border px-4 py-3">
-        <p className="text-2xs text-fg-subtle">Powered by Umbra</p>
-        <p className="mt-0.5 text-2xs text-fg-subtle">SDK v4.0.0</p>
+      <div className="border-t border-border px-4 py-3 space-y-2">
+        <Link
+          href="/employee"
+          className="flex items-center gap-1 text-2xs text-fg-subtle hover:text-fg-muted transition-colors"
+        >
+          <ExternalLink className="h-3 w-3" />
+          Employee portal
+        </Link>
+        <p className="text-2xs text-fg-subtle">Powered by Umbra · SDK v4.0.0</p>
       </div>
     </aside>
   )
