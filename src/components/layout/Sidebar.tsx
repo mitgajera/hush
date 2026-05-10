@@ -10,7 +10,6 @@ import { PrivateBadge } from '@/components/ui/PrivateBadge'
 import { cn } from '@/lib/utils/cn'
 
 function isActive(pathname: string, href: string) {
-  if (href === '/') return pathname === '/'
   return pathname === href || pathname.startsWith(`${href}/`)
 }
 
@@ -42,7 +41,7 @@ export function Sidebar() {
   return (
     <aside className="hidden w-[220px] shrink-0 flex-col border-r border-border bg-bg-surface md:flex">
       <div className="flex items-center justify-between px-4 py-4">
-        <Link href="/" className="text-sm font-medium text-fg">
+        <Link href="/dashboard" className="text-sm font-medium text-fg">
           hush.
         </Link>
         <PrivateBadge size="sm" />

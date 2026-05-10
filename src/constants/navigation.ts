@@ -15,7 +15,7 @@ export type NavItem = {
 }
 
 export const NAV_ITEMS: readonly NavItem[] = [
-  { href: '/', label: 'Dashboard', icon: Home },
+  { href: '/dashboard', label: 'Dashboard', icon: Home },
   { href: '/payroll', label: 'Hush Payroll', icon: Users },
   { href: '/links', label: 'Hush Links', icon: LinkIcon },
   { href: '/milestones', label: 'Milestones', icon: CheckCircle2 },
@@ -29,7 +29,7 @@ export const SETTINGS_ITEM: NavItem = {
 }
 
 export const PAGE_TITLES: Record<string, string> = {
-  '/': 'Dashboard',
+  '/dashboard': 'Dashboard',
   '/payroll': 'Hush Payroll',
   '/links': 'Hush Links',
   '/milestones': 'Milestones',
