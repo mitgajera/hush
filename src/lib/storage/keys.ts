@@ -6,6 +6,7 @@ export const STORAGE_KEYS = {
   credentials: 'hush:credentials:v1',
   settings: 'hush:settings:v1',
   revealMode: 'hush:reveal:v1',
+  claimedPayments: 'hush:claimed:v1',
 } as const
 
 export const STORAGE_EVENT = 'hush:storage'
