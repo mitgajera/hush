@@ -56,6 +56,9 @@ importers:
       '@wallet-standard/app':
         specifier: ^1.1.0
         version: 1.1.0
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
@@ -95,6 +98,9 @@ importers:
       sonner:
         specifier: ^1.5.0
         version: 1.7.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      stream-browserify:
+        specifier: ^3.0.0
+        version: 3.0.0
       tailwind-merge:
         specifier: ^2.3.0
         version: 2.6.1
