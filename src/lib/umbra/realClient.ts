@@ -45,10 +45,23 @@ async function preSimulate(rpcUrl: string, wireBase64: string): Promise<void> {
   if (val.err) {
     const logs = (val.logs ?? []).join('\n')
     console.error('[Umbra] simulation FAILED:', JSON.stringify(val.err), '\n', logs)
+
     if (logs.includes('fee_schedule') && logs.includes('AccountNotInitialized')) {
       throw new Error(
         'Umbra devnet fee_schedule missing for this token. ' +
         'The Umbra team needs to initialise it. Contact dev@umbraprivacy.com'
+      )
+    }
+    if (logs.includes('depositor_token_account') && logs.includes('AccountNotInitialized')) {
+      throw new Error(
+        'The sender does not have a USDC token account on this network. ' +
+        'They need to receive or airdrop USDC first so the account is initialized before creating Hush links.'
+      )
+    }
+    if (logs.includes('AccountNotInitialized')) {
+      throw new Error(
+        'A required on-chain account is not initialized. ' +
+        'Make sure the sender is registered with Umbra and has a USDC balance.'
       )
     }
     throw new Error(
@@ -66,8 +79,11 @@ export async function createRealUmbraClient(
   if (!wallet.signTransaction) throw new Error('Wallet does not support signTransaction')
   if (!wallet.signMessage) throw new Error('Wallet does not support signMessage')
 
-  const rpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC_URL
-  if (!rpcUrl) throw new Error('Missing NEXT_PUBLIC_SOLANA_RPC_URL')
+  // Prefer explicit public env var; fall back to the server-side /api/rpc proxy.
+  // The proxy keeps the Helius API key out of the JS bundle.
+  const rpcUrl =
+    process.env.NEXT_PUBLIC_SOLANA_RPC_URL ||
+    `${window.location.origin}/api/rpc`
 
   const sdk = await loadSdk()
   const address = wallet.publicKey.toBase58()

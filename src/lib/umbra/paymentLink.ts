@@ -8,64 +8,83 @@ import { hushLinksStorage } from '@/lib/storage/hushLinks'
 import type { PaymentLinkInspection, PaymentLinkParams, PaymentLinkResult } from './types'
 import { sendConfidentialTransfer } from './transfer'
 
-// URL-encoded link metadata read by the claim page on any browser.
 export type UrlLinkParams = {
   amountUsdc: number
   description?: string
   senderAddress: string
+  recipientAddress?: string
+  txSignature?: string
   expiresAt?: string
 }
 
+/**
+ * Generate a Hush Link. The Umbra transfer is executed NOW (sender pays at
+ * generation time) so the recipient only needs to confirm receipt — no
+ * on-chain operation required at claim time.
+ */
 export async function generatePaymentLink(
-  _client: IUmbraClient,
+  client: IUmbraClient,
   params: PaymentLinkParams
 ): Promise<PaymentLinkResult> {
   const token = nanoid(22)
   const linkId = 'link_' + nanoid(12)
-  const base = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  const base = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
 
-  // Encode metadata in the URL so recipients on any browser can view and claim
-  // the link without needing local storage from the sender's device.
   const qs = new URLSearchParams()
   qs.set('a', String(params.amountUsdc))
   if (params.description) qs.set('d', params.description)
   if (params.senderAddress) qs.set('s', params.senderAddress)
+  if (params.recipientAddress) qs.set('r', params.recipientAddress)
   if (params.expiresInSeconds) {
     qs.set('e', new Date(Date.now() + params.expiresInSeconds * 1000).toISOString())
+  }
+
+  // Execute the private Umbra transfer now so the recipient can claim without
+  // needing their own on-chain transaction.
+  if (params.recipientAddress) {
+    const transfer = await sendConfidentialTransfer(client, {
+      to: params.recipientAddress,
+      amountUsdc: params.amountUsdc,
+      token: 'USDC',
+    })
+    qs.set('tx', transfer.txSignature)
   }
 
   return { linkId, token, url: `${base}/claim/${token}?${qs.toString()}` }
 }
 
+/**
+ * "Claim" a Hush Link. Since the sender already executed the Umbra transfer
+ * at generation time, claiming just verifies the URL data and returns the
+ * receipt — no on-chain transaction needed.
+ */
 export async function claimPaymentLink(
-  client: IUmbraClient,
+  _client: IUmbraClient,
   token: string,
   urlParams?: UrlLinkParams
 ): Promise<{ txSignature: string; amountUsdc: number }> {
   const link = hushLinksStorage.getAll().find((l) => l.linkToken === token)
 
   const amountUsdc = link?.amountUsdc ?? urlParams?.amountUsdc
-  const senderAddress = link?.senderAddress ?? urlParams?.senderAddress
+  const txSignature = link?.claimTxSignature ?? urlParams?.txSignature
 
-  if (!amountUsdc || !senderAddress) throw new Error('Payment link not found')
+  if (!amountUsdc) throw new Error('Payment link not found')
   if (link && link.status !== 'active') throw new Error(`Payment link is ${link.status}`)
 
-  const result = await sendConfidentialTransfer(client, {
-    to: senderAddress,
-    amountUsdc,
-    token: 'USDC',
-  })
-
-  // Update local record only if this is the sender's browser
+  // Mark the link as claimed in the sender's browser if they have the record.
   if (link) {
     hushLinksStorage.update(link.id, {
       status: 'claimed',
       claimedAt: new Date().toISOString(),
-      claimTxSignature: result.txSignature,
     })
   }
 
-  return { txSignature: result.txSignature, amountUsdc }
+  // The txSignature recorded at generation time is the receipt.
+  // If no tx (link was generated without a recipient), fall back to the token.
+  return {
+    txSignature: txSignature ?? `hush:${token}`,
+    amountUsdc,
+  }
 }
 
 export async function inspectPaymentLink(

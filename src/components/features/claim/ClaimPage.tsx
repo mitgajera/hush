@@ -51,6 +51,8 @@ export function ClaimPage({ token }: { token: string }) {
       amountUsdc: Number(a),
       description: searchParams.get('d') ?? undefined,
       senderAddress: s,
+      recipientAddress: searchParams.get('r') ?? undefined,
+      txSignature: searchParams.get('tx') ?? undefined,
       expiresAt: searchParams.get('e') ?? undefined,
     }
   }, [searchParams])

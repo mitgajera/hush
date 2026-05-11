@@ -19,12 +19,14 @@ export type PaymentLinkParams = {
   description?: string
   expiresInSeconds?: number
   senderAddress?: string
+  recipientAddress?: string
 }
 
 export type PaymentLinkResult = {
   linkId: string
   token: string
   url: string
+  txSignature?: string
 }
 
 export type ViewingKeyScope =

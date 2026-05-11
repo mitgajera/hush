@@ -13,8 +13,13 @@ import { TooltipProvider } from '@/components/ui/Tooltip'
 import '@solana/wallet-adapter-react-ui/styles.css'
 
 export function Providers({ children }: { children: ReactNode }) {
+  // Use explicit env var if set; otherwise route through the server-side proxy
+  // so the Helius API key is never exposed in the client bundle.
   const endpoint =
-    process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.devnet.solana.com'
+    process.env.NEXT_PUBLIC_SOLANA_RPC_URL ||
+    (typeof window !== 'undefined'
+      ? `${window.location.origin}/api/rpc`
+      : 'https://api.devnet.solana.com')
 
   const wallets = useMemo(
     () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],

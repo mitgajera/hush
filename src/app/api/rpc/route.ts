@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Server-only — never sent to the browser bundle
-const RPC_URL =
-  process.env.SOLANA_RPC_URL ||
-  process.env.NEXT_PUBLIC_SOLANA_RPC_URL ||
-  'https://api.devnet.solana.com'
+// Server-only env var — never included in the browser bundle.
+// Set SOLANA_RPC_URL (no NEXT_PUBLIC_ prefix) in Vercel / .env.local
+const RPC_URL = process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com'
 
 export async function POST(req: NextRequest) {
   try {

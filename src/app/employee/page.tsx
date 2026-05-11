@@ -8,6 +8,7 @@ import { HushLogo } from '@/components/ui/HushLogo'
 import { RevealProvider } from '@/contexts/RevealContext'
 import { WalletAddressCard } from '@/components/features/employee/WalletAddressCard'
 import { ReceivedPaymentsTable } from '@/components/features/employee/ReceivedPaymentsTable'
+import { UmbraRegistration } from '@/components/features/settings/UmbraRegistration'
 
 function PortalContent() {
   const wallet = useWallet()
@@ -67,6 +68,7 @@ function PortalContent() {
               </p>
             </div>
 
+            <UmbraRegistration />
             <WalletAddressCard address={wallet.publicKey.toBase58()} />
             <ReceivedPaymentsTable />
           </div>

@@ -26,6 +26,7 @@ export function LinkGenerator({ onGenerated }: Props) {
   const wallet = useWallet()
   const balanceResult = useEncryptedUsdcBalance()
   const [amount, setAmount] = useState<string>('')
+  const [recipientAddress, setRecipientAddress] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [expiry, setExpiry] = useState<ExpiryKey>('7d')
   const [generating, setGenerating] = useState(false)
@@ -60,6 +61,7 @@ export function LinkGenerator({ onGenerated }: Props) {
         description: parsed.data.description,
         expiresInSeconds,
         senderAddress: wallet.publicKey.toBase58(),
+        recipientAddress: recipientAddress.trim() || undefined,
       })
 
       const network = (process.env.NEXT_PUBLIC_SOLANA_NETWORK as Network | undefined) ?? 'devnet'
@@ -136,6 +138,15 @@ export function LinkGenerator({ onGenerated }: Props) {
           ))}
         </Select>
       </div>
+
+      <Input
+        label="Recipient wallet address"
+        placeholder="Solana address of the recipient"
+        value={recipientAddress}
+        onChange={(e) => setRecipientAddress(e.target.value)}
+        hint="The private Umbra transfer is sent immediately when you generate the link."
+        className="font-mono text-xs"
+      />
 
       <Input
         label="Description (optional)"

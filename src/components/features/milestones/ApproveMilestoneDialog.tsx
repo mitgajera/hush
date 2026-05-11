@@ -9,7 +9,6 @@ import { Dialog } from '@/components/ui/Dialog'
 import { TruncatedAddress } from '@/components/ui/TruncatedAddress'
 import { CopyButton } from '@/components/ui/CopyButton'
 import { useUmbra } from '@/hooks/useUmbra'
-import { sendConfidentialTransfer } from '@/lib/umbra/transfer'
 import { generatePaymentLink } from '@/lib/umbra/paymentLink'
 import { projectsStorage } from '@/lib/storage/projects'
 import { hushLinksStorage } from '@/lib/storage/hushLinks'
@@ -53,19 +52,13 @@ export function ApproveMilestoneDialog({
     })
 
     try {
-      // 1. Send confidential transfer to contractor
-      const transfer = await sendConfidentialTransfer(umbra, {
-        to: project.contractorAddress,
-        amountUsdc: milestone.amountUsdc,
-        token: 'USDC',
-        memo: `${project.name} · Milestone #${milestone.number}`,
-      })
-
-      // 2. Generate a Hush link the contractor can claim via link flow
+      // Send privately at generation time; recipient just opens the link
       const linkResult = await generatePaymentLink(umbra, {
         amountUsdc: milestone.amountUsdc,
         token: 'USDC',
         description: `${project.name} · Milestone #${milestone.number}`,
+        senderAddress: wallet.publicKey.toBase58(),
+        recipientAddress: project.contractorAddress,
       })
 
       const network =
@@ -83,12 +76,12 @@ export function ApproveMilestoneDialog({
       }
       hushLinksStorage.save(link)
 
-      // 3. Mark milestone paid + store tx sig + link id
+      // Mark milestone paid + store tx sig + link id
       projectsStorage.update(project.id, {
         milestones: patchMilestone(project, milestone.id, {
           status: 'paid',
           paidAt: new Date().toISOString(),
-          txSignature: transfer.txSignature,
+          txSignature: linkResult.txSignature,
           hushLinkId: link.id,
         }),
       })
