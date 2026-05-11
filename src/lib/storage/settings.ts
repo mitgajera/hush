@@ -1,8 +1,10 @@
 import { AppSettings } from '@/types'
 import { STORAGE_EVENT, STORAGE_KEYS } from './keys'
 
+// Use the server-side proxy so the RPC API key never reaches the browser bundle.
+// Users can override this in Settings with their own RPC URL.
 const DEFAULTS: AppSettings = {
-  rpcUrl: process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.devnet.solana.com',
+  rpcUrl: '/api/rpc',
   network: (process.env.NEXT_PUBLIC_SOLANA_NETWORK as AppSettings['network']) || 'devnet',
   hideAmountsByDefault: true,
 }

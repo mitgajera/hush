@@ -100,11 +100,26 @@ export function WalletSettings() {
           label="RPC URL"
           value={rpcDraft}
           onChange={(e) => setRpcDraft(e.target.value)}
+          onFocus={(e) => {
+            // Reveal full URL on focus so the user can edit it
+            const el = e.currentTarget
+            el.type = 'text'
+          }}
+          onBlur={(e) => {
+            // Mask API key when not focused
+            const el = e.currentTarget
+            el.type = rpcDraft.includes('api-key') ? 'password' : 'text'
+          }}
+          type={rpcDraft.includes('api-key') ? 'password' : 'text'}
+          autoComplete="off"
+          spellCheck={false}
           className="font-mono text-xs"
           hint={
             settings.rpcUrl !== rpcDraft
               ? 'Unsaved changes.'
-              : `Currently using ${connection.rpcEndpoint.replace(/([?&]api-key=)[^&]*/i, '$1***')}`
+              : settings.rpcUrl === '/api/rpc'
+              ? 'Using server-side proxy — API key is safe.'
+              : `Active: ${connection.rpcEndpoint.replace(/([?&]api-key=)[^&]*/i, '$1***')}`
           }
         />
         <div className="flex items-center justify-end gap-2">
