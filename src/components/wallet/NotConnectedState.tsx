@@ -17,7 +17,7 @@ export function NotConnectedState() {
       </div>
       <div className="space-y-1.5">
         <h2 className="text-lg font-medium text-fg">
-          Connect Umbra Wallet to continue
+          Connect Wallet to continue
         </h2>
         <p className="max-w-md text-sm text-fg-muted">
           Hush uses the Umbra Wallet to manage keys, sign transactions, and display

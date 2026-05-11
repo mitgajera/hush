@@ -20,7 +20,7 @@ export function WalletConnectButton() {
         loading={connecting}
         onClick={() => setVisible(true)}
       >
-        Connect Umbra Wallet
+        Connect Wallet
       </Button>
     )
   }

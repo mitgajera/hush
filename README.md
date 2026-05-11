@@ -4,7 +4,7 @@ Every Solana payment is public. Hush changes that.
 
 Built on Umbra. Private by default. Auditable on demand.
 
-**Live demo**: https://hush.vercel.app (Solana devnet)
+**Live demo**: https://hushfi.vercel.app (Solana devnet)
 
 ## The problem
 Every salary, invoice, and contractor payment on Solana is publicly
